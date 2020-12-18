@@ -1,4 +1,5 @@
-﻿using FinalAsmntBlogPostSystem.Repositories;
+﻿using FinalAsmntBlogPostSystem.Models;
+using FinalAsmntBlogPostSystem.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,25 @@ namespace FinalAsmntBlogPostSystem.Controllers
         public IHttpActionResult GetAll()
         {
             return Ok(pr.GetAll());
+        }
+        
+        [Route("{id}", Name = "GetPostById")]
+        public IHttpActionResult Get(int id)
+        {
+            var post = pr.Get(id);
+            if (post == null)
+            {
+                return StatusCode(HttpStatusCode.NoContent);
+            }
+            return Ok(pr.Get(id));
+        }
+
+        [Route("")]
+        public IHttpActionResult Post(Post post)
+        {
+            pr.Insert(post);
+            string uri = Url.Link("GetPostById", new { id = post.PostId});
+            return Created(uri, post);
         }
     }
 }
