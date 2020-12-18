@@ -38,5 +38,20 @@ namespace FinalAsmntBlogPostSystem.Controllers
             string uri = Url.Link("GetPostById", new { id = post.PostId});
             return Created(uri, post);
         }
+
+        [Route("{id}")]
+        public IHttpActionResult Put([FromUri]int id,[FromBody]Post post)
+        {
+            post.PostId = id;
+            pr.Update(post);
+            return Ok(post);
+        }
+
+        [Route("{id}")]
+        public IHttpActionResult Delete(int id)
+        {
+            pr.Delete(id);
+            return StatusCode(HttpStatusCode.NoContent);
+        }
     }
 }
