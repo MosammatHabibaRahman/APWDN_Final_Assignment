@@ -18,32 +18,40 @@ namespace FinalAsmntBlogPostSystem.Controllers
         [Route("{id}/comments")]
         public IHttpActionResult GetAll(int id)
         {
-            return Ok(cr.GetAll());
+            return Ok(cr.GetAllByPostId(id));
         }
 
         [Route("{id}/comments/{cid:int}", Name = "GetCommentByPostId")]
-        public IHttpActionResult Get(int cid)
+        public IHttpActionResult Get(int id, int cid)
         {
-            var comment = cr.Get(cid);
+            var comment = cr.GetCommentOfAPost(id,cid);
             if (comment == null)
             {
                 return StatusCode(HttpStatusCode.NoContent);
             }
-            return Ok(cr.Get(cid));
+            return Ok(cr.GetCommentOfAPost(id,cid));
         }
 
         [Route("{id}/comments")]
         public IHttpActionResult Post(Comment comment)
         {
             cr.Insert(comment);
-            string uri = Url.Link("GetCommentByPostId", new { id = comment.CommentId });
+            string uri = Url.Link("GetCommentByPostId", new { cid = comment.CommentId });
             return Created(uri, comment);
         }
-
-        [Route("{id}/comments/{commentId:int}")]
-        public IHttpActionResult Delete(int id)
+        
+        [Route("{id}/comments/{cid:int}")]
+        public IHttpActionResult Put([FromUri] int cid, [FromBody] Comment comment)
         {
-            cr.Delete(id);
+            comment.CommentId = cid;
+            cr.Update(comment);
+            return Ok(comment);
+        }
+
+        [Route("{id}/comments/{cid:int}")]
+        public IHttpActionResult Delete(int cid)
+        {
+            cr.Delete(cid);
             return StatusCode(HttpStatusCode.NoContent);
         }
     }
