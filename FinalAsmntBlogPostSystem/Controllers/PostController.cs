@@ -34,17 +34,31 @@ namespace FinalAsmntBlogPostSystem.Controllers
         [Route("")]
         public IHttpActionResult Post(Post post)
         {
-            pr.Insert(post);
-            string uri = Url.Link("GetPostById", new { id = post.PostId});
-            return Created(uri, post);
+            if(post.Text==null)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                pr.Insert(post);
+                string uri = Url.Link("GetPostById", new { id = post.PostId });
+                return Created(uri, post);
+            }
         }
 
         [Route("{id}")]
         public IHttpActionResult Put([FromUri]int id,[FromBody]Post post)
         {
-            post.PostId = id;
-            pr.Update(post);
-            return Ok(post);
+            if (post.Text == null)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                post.PostId = id;
+                pr.Update(post);
+                return Ok(post);
+            }
         }
 
         [Route("{id}")]

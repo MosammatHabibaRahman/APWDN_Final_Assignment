@@ -35,17 +35,31 @@ namespace FinalAsmntBlogPostSystem.Controllers
         [Route("{id}/comments")]
         public IHttpActionResult Post(Comment comment)
         {
-            cr.Insert(comment);
-            string uri = Url.Link("GetCommentByPostId", new { cid = comment.CommentId });
-            return Created(uri, comment);
+            if (comment.Text == null)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                cr.Insert(comment);
+                string uri = Url.Link("GetCommentByPostId", new { cid = comment.CommentId });
+                return Created(uri, comment);
+            }
         }
         
         [Route("{id}/comments/{cid:int}")]
         public IHttpActionResult Put([FromUri] int cid, [FromBody] Comment comment)
         {
-            comment.CommentId = cid;
-            cr.Update(comment);
-            return Ok(comment);
+            if (comment.Text == null)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                comment.CommentId = cid;
+                cr.Update(comment);
+                return Ok(comment);
+            }
         }
 
         [Route("{id}/comments/{cid:int}")]
